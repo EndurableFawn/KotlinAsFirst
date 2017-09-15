@@ -2,6 +2,9 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
+import lesson1.task1.sqr
+import java.lang.Math.PI
+import java.lang.Math.acos
 
 /**
  * Пример
@@ -33,7 +36,17 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String = TODO()
+fun ageDescription(age: Int): String {
+    if ((age % 10 in 5..9) || (age % 10 == 0) || (age in 11..14) || (age in 111..114)) {
+        return "$age лет"
+    } else if (age % 10 in 2..4) {
+        return "$age года"
+    } else {
+        return "$age год"
+    }
+
+
+}
 
 /**
  * Простая
@@ -44,7 +57,16 @@ fun ageDescription(age: Int): String = TODO()
  */
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
-                   t3: Double, v3: Double): Double = TODO()
+                   t3: Double, v3: Double): Double {
+    val path = v1 * t1 + v2 * t2 + v3 * t3
+    if (path / 2 <= v1 * t1) {
+        return path / (2 * v1)
+    } else if (path / 2 <= v1 * t1 + v2 * t2) {
+        return (path / 2 - v1 * t1) / v2 + t1
+    } else {
+        return (path / 2 - v1 * t1 - v2 * t2) / v3 + t1 + t2
+    }
+}
 
 /**
  * Простая
@@ -57,7 +79,12 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int = TODO()
+                       rookX2: Int, rookY2: Int): Int = when {
+    ((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX2) || (kingY == rookY2)) -> 3
+    (kingX == rookX1) || (kingY == rookY1) -> 1
+    (kingX == rookX2) || (kingY == rookY2) -> 2
+    else -> 0
+}
 
 /**
  * Простая
@@ -71,7 +98,12 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int = TODO()
+                          bishopX: Int, bishopY: Int): Int = when {
+    ((kingX == rookX) || (kingY == rookY)) && ((kingX - kingY == bishopX - bishopY) || (kingX + kingY == bishopX + bishopY)) -> 3
+    (kingX == rookX) || (kingY == rookY) -> 1
+    (kingX - kingY == bishopX - bishopY) || (kingX + kingY == bishopX + bishopY) -> 2
+    else -> 0
+}
 
 /**
  * Простая
@@ -81,7 +113,35 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    if ((a + b <= c) || (c + b <= a) || (a + c <= b)) {
+        return -1
+    } else {
+
+        val max = maxOf(a, c, b)
+        if (max == a) {
+            return when {
+                acos((sqr(b) + sqr(c) - sqr(a)) / (2 * b * c)) * 180 / PI > 90.0 -> 2
+                acos((sqr(b) + sqr(c) - sqr(a)) / (2 * b * c)) * 180 / PI == 90.0 -> 1
+                else -> 0
+            }
+        } else if (max == b) {
+            return when {
+                acos((sqr(a) + sqr(c) - sqr(b)) / (2 * a * c)) * 180 / PI > 90.0 -> 2
+                acos((sqr(a) + sqr(c) - sqr(b)) / (2 * a * c)) * 180 / PI == 90.0 -> 1
+                else -> 0
+            }
+        } else {
+
+            return when {
+                acos((sqr(b) + sqr(a) - sqr(c)) / (2 * b * a)) * 180 / PI > 90.0 -> 2
+                acos((sqr(b) + sqr(a) - sqr(c)) / (2 * b * a)) * 180 / PI == 90.0 -> 1
+                else -> 0
+            }
+        }
+    }
+}
+
 
 /**
  * Средняя
@@ -91,4 +151,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
+
+    ((a >= c) && (b <= d)) -> b - a
+    ((c >= a) && (d <= b)) -> d - c
+    ((b >= c) && (b <= d)) -> b - c
+    ((d >= a) && (d <= b)) -> d - a
+    else -> -1
+
+}
