@@ -36,17 +36,13 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    if ((age % 10 in 5..9) || (age % 10 == 0) || (age in 11..14) || (age in 111..114)) {
-        return "$age лет"
-    } else if (age % 10 in 2..4) {
-        return "$age года"
-    } else {
-        return "$age год"
+fun ageDescription(age: Int): String =
+     when {
+        (age % 10 in 5..9) || (age % 10 == 0) || (age % 100 in 11..14) -> "$age лет"
+        (age % 10 in 2..4) -> "$age года"
+        else -> "$age год"
     }
 
-
-}
 
 /**
  * Простая
@@ -59,12 +55,10 @@ fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
                    t3: Double, v3: Double): Double {
     val path = v1 * t1 + v2 * t2 + v3 * t3
-    if (path / 2 <= v1 * t1) {
-        return path / (2 * v1)
-    } else if (path / 2 <= v1 * t1 + v2 * t2) {
-        return (path / 2 - v1 * t1) / v2 + t1
-    } else {
-        return (path / 2 - v1 * t1 - v2 * t2) / v3 + t1 + t2
+    return when {
+        (path / 2 <= v1 * t1)-> path /(2 * v1)
+        (path / 2 <= v1 * t1+v2 * t2)-> (path / 2-v1 * t1) / v2+t1
+        else->(path / 2-v1 * t1-v2 * t2) / v3+t1+t2
     }
 }
 
@@ -152,7 +146,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
-    
+
     ((a >= c) && (b <= d)) -> b - a
     ((c >= a) && (d <= b)) -> d - c
     ((b >= c) && (b <= d)) -> b - c
