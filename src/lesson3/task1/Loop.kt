@@ -3,6 +3,7 @@ package lesson3.task1
 
 import lesson1.task1.sqr
 import java.lang.Math.*
+
 /**
  * Пример
  *
@@ -68,7 +69,7 @@ fun digitNumber(n: Int): Int {
     do {
         count++
         number /= 10
-    } while (number > 0)
+    } while (abs(number) > 0)
     return count
 }
 
@@ -87,10 +88,28 @@ fun fib(n: Int): Int = if (n < 3) 1 else fib(n - 1) + fib(n - 2)
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    for (k in 2..m * n) {
-        if (k % n.toDouble() == 0.0 && k % m.toDouble() == 0.0) return k
+    var number1 = n
+    var number2 = m
+    var k = 1
+    if (isCoPrime(m, n)) {
+        if (m == n) {
+            return m
+        }
+        return m * n
     }
-    return -1
+    for (i in 2..max(m, n)) {
+        if (isPrime(i)) {
+            while (number1 % i == 0 || number2 % i == 0) {
+                k *= i
+                if (number1 % i == 0 && number2 % i == 0) {
+                    number1 /= i
+                    number2 /= i
+                } else if (number1 % i == 0) number1 /= i
+                else number2 /= i
+            }
+        }
+    }
+    return k
 }
 
 /**
@@ -162,8 +181,12 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {
     var number = x
-    while (number > 2 * PI) {
-        number = (Math.round(number / PI) - 2) * PI
+    while (abs(number) >= 2 * PI) {
+        if (number > 0) {
+            number = (number / PI - 2) * PI
+        } else {
+            number = (number / PI + 2) * PI
+        }
     }
     var result = 0.0
     var count = 0
@@ -186,7 +209,11 @@ fun sin(x: Double, eps: Double): Double {
 fun cos(x: Double, eps: Double): Double {
     var number = x
     while (number > 2 * PI) {
-        number = (Math.round(number / PI) - 2) * PI
+        if (x > 0) {
+            number = (number / PI - 2) * PI
+        } else {
+            number = (number / PI + 2) * PI
+        }
     }
     var result = 1.0
     var count = 1
@@ -291,11 +318,17 @@ fun squareSequenceDigit(n: Int): Int {
  * Например, 2-я цифра равна 1, 9-я 2, 14-я 5.
  */
 fun fibSequenceDigit(n: Int): Int {
+    var fib1 = 0
+    var fib2 = 1
+    var fib3 = 0
     var currentIntNumber = 0
     var count = 0
     var counter = 1
     while (count < n) {
-        val currentNumber = fib(counter).toString()
+        fib1 = fib2
+        fib2 = fib3
+        fib3 = fib1 + fib2
+        val currentNumber = fib3.toString()
         currentIntNumber = currentNumber.toInt()
         count += currentNumber.length
         counter++

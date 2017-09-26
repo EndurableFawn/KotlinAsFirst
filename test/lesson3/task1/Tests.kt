@@ -8,12 +8,12 @@ class Tests {
     @Test
     @Tag("Example")
     fun factorial() {
-        //assertEquals(1.0, factorial(0), 1e-5)
-       // assertEquals(1.0, factorial(1), 1e-5)
-       // assertEquals(6.0, factorial(3), 1e-5)
-       // assertEquals(120.0, factorial(5), 1e-5)
-       // assertEquals(3628800.0, factorial(10), 1e-5)
-       // assertEquals(2.43290200817664E18, factorial(20), 1E10)
+        assertEquals(1.0, factorial(0), 1e-5)
+        assertEquals(1.0, factorial(1), 1e-5)
+        assertEquals(6.0, factorial(3), 1e-5)
+        assertEquals(120.0, factorial(5), 1e-5)
+        assertEquals(3628800.0, factorial(10), 1e-5)
+        assertEquals(2.43290200817664E18, factorial(20), 1E10)
     }
 
     @Test
@@ -185,10 +185,6 @@ class Tests {
         assertEquals(false,isPalindrome(3653))
         assertEquals(true,isPalindrome(15751))
         assertEquals(true,isPalindrome(24688642))
-        //assertTrue(isPalindrome(3))
-        //assertFalse(isPalindrome(3653))
-        //assertTrue(isPalindrome(15751))
-        //assertTrue(isPalindrome(24688642))
     }
 
     @Test
