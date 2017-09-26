@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson3.task1
 
 import lesson1.task1.sqr
@@ -91,10 +92,8 @@ fun lcm(m: Int, n: Int): Int {
     var number1 = n
     var number2 = m
     var k = 1
+    if (m == n) return m
     if (isCoPrime(m, n)) {
-        if (m == n) {
-            return m
-        }
         return m * n
     }
     for (i in 2..max(m, n)) {
@@ -145,6 +144,7 @@ fun maxDivisor(n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
+    if (m == 1 && n == 1) return true
     if (m == n) return false
     for (i in 2..max(n, m) / 2) {
         if (m % i == 0 && n % i == 0) return false
@@ -208,7 +208,7 @@ fun sin(x: Double, eps: Double): Double {
  */
 fun cos(x: Double, eps: Double): Double {
     var number = x
-    while (number > 2 * PI) {
+    while (abs(number) > 2 * PI) {
         if (x > 0) {
             number = (number / PI - 2) * PI
         } else {
