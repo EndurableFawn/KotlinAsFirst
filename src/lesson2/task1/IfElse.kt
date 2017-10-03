@@ -113,25 +113,16 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     } else {
 
         val max = maxOf(a, c, b)
-        if (max == a) {
-            return when {
-                acos((sqr(b) + sqr(c) - sqr(a)) / (2 * b * c)) * 180 / PI > 90.0 -> 2
-                acos((sqr(b) + sqr(c) - sqr(a)) / (2 * b * c)) * 180 / PI == 90.0 -> 1
-                else -> 0
-            }
-        } else if (max == b) {
-            return when {
-                acos((sqr(a) + sqr(c) - sqr(b)) / (2 * a * c)) * 180 / PI > 90.0 -> 2
-                acos((sqr(a) + sqr(c) - sqr(b)) / (2 * a * c)) * 180 / PI == 90.0 -> 1
-                else -> 0
-            }
-        } else {
-
-            return when {
-                acos((sqr(b) + sqr(a) - sqr(c)) / (2 * b * a)) * 180 / PI > 90.0 -> 2
-                acos((sqr(b) + sqr(a) - sqr(c)) / (2 * b * a)) * 180 / PI == 90.0 -> 1
-                else -> 0
-            }
+        val min = minOf(a, c, b)
+        val middle = when {
+            a != max && a != min -> a
+            b != max && b != min -> b
+            else -> c
+        }
+        return when {
+            AngleOfTriangle(max, min, middle) > 90.0 -> 2
+            AngleOfTriangle(max, min, middle) == 90.0 -> 1
+            else -> 0
         }
     }
 }
@@ -154,3 +145,5 @@ fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
     else -> -1
 
 }
+
+fun AngleOfTriangle(a:Double,b:Double,c:Double)= acos((sqr(b) + sqr(c) - sqr(a)) / (2 * b * c)) * 180 / PI
