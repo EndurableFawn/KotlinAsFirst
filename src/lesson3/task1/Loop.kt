@@ -240,7 +240,7 @@ fun revert(n: Int): Int {
  * первая цифра равна последней, вторая -- предпоследней и так далее.
  * 15751 -- палиндром, 3653 -- нет.
  */
-fun isPalindrome(n: Int) = revert(n) == n
+fun isPalindrome(n: Int) = revertDouble(n) == n.toDouble()
 
 /**
  * Средняя
@@ -306,3 +306,13 @@ fun fibSequenceDigit(n: Int): Int {
     return fib3 % 10
 }
 
+fun revertDouble(n: Int): Double {
+    var startNumber = n
+    var resultNumber = 0.0
+    do {
+        resultNumber *= 10
+        resultNumber += startNumber % 10
+        startNumber /= 10
+    } while (startNumber > 0)
+    return resultNumber
+}
