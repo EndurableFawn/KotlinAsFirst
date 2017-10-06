@@ -96,7 +96,7 @@ fun lcm(m: Int, n: Int): Int {
     if (isCoPrime(m, n)) {
         return m * n
     }
-    for (i in 2..min(m, n)) {
+    for (i in 2..max(m, n)) {
         if (isPrime(i)) {
             while (number1 % i == 0 || number2 % i == 0) {
                 k *= i
