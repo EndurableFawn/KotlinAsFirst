@@ -96,7 +96,7 @@ fun lcm(m: Int, n: Int): Int {
     if (isCoPrime(m, n)) {
         return m * n
     }
-    for (i in 2..max(m, n)) {
+    for (i in 2..min(m, n)) {
         if (isPrime(i)) {
             while (number1 % i == 0 || number2 % i == 0) {
                 k *= i
@@ -114,7 +114,7 @@ fun lcm(m: Int, n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    for (i in 2..sqrt(n.toDouble()).toInt()) {
+    for (i in 2..ceil(sqrt(n.toDouble())).toInt()) {
         if (n % i == 0) return i
     }
     return n
@@ -157,12 +157,12 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    val sqrtm = sqrt(m.toDouble())
-    val sqrtn = sqrt(n.toDouble())
-    if (sqrtm % 1 == 0.0 || sqrtn % 1 == 0.0) return true
+    val sqrtM = sqrt(m.toDouble())
+    val sqrtN = sqrt(n.toDouble())
+    if (sqrtM % 1 == 0.0 || sqrtN % 1 == 0.0) return true
     else {
         var count = -1
-        for (i in ceil(sqrtm).toInt()..ceil(sqrtn).toInt()) {
+        for (i in ceil(sqrtM).toInt()..ceil(sqrtN).toInt()) {
             count++
         }
         return count > 0

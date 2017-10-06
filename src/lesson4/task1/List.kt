@@ -247,11 +247,13 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
+    val fromElementToLetterUsingUnicode = 87
+    val fromElementToNumberUsingUnicode = 48
     val list = convert(n, base)
     var result = ""
     for (element in list) {
-        if (element > 9) result += (element + 87).toChar()
-        else result += (element + 48).toChar()
+        result += if (element > 9) (element + fromElementToLetterUsingUnicode).toChar()
+        else (element + fromElementToNumberUsingUnicode).toChar()
     }
     return result
 }
@@ -282,10 +284,13 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Например: str = "13c", base = 14 -> 250
  */
 fun decimalFromString(str: String, base: Int): Int {
+    val fromUnicodeLetterToNumber = 87
+    val fromUnicodeNumberToNumber = 48
+    val lowercaseAInUnicode = 97
     val list = mutableListOf<Int>()
     for (element in str) {
-        if (element.toInt() > 96) list.add(element.toInt() - 87)
-        else list.add(element.toInt() - 48)
+        if (element.toInt() >= lowercaseAInUnicode) list.add(element.toInt() - fromUnicodeLetterToNumber)
+        else list.add(element.toInt() - fromUnicodeNumberToNumber)
     }
     return decimal(list, base)
 }
@@ -298,7 +303,63 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    var result = ""
+    var number = n
+    while (number >= 1000) {
+        result += "M"
+        number -= 1000
+    }
+    if (number >= 900) {
+        result += "CM"
+        number -= 900
+    }
+    while (number >= 500) {
+        result += "D"
+        number -= 500
+    }
+    if (number >= 400) {
+        result += "CD"
+        number -= 400
+    }
+    while (number >= 100) {
+        result += "C"
+        number -= 100
+    }
+    if (number >= 90) {
+        result += "XC"
+        number -= 90
+    }
+    while (number >= 50) {
+        result += "L"
+        number -= 50
+    }
+    if (number >= 40) {
+        result += "XL"
+        number -= 40
+    }
+    while (number >= 10) {
+        result += "X"
+        number -= 10
+    }
+    if (number >= 9) {
+        result += "IX"
+        number -= 9
+    }
+    while (number >= 5) {
+        result += "V"
+        number -= 5
+    }
+    if (number >= 4) {
+        result += "IV"
+        number -= 4
+    }
+    while (number >= 1) {
+        result += "I"
+        number -= 1
+    }
+    return result
+}
 
 /**
  * Очень сложная
@@ -307,4 +368,88 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+var trigger = 0
+
+fun russian(n: Int): String {
+    trigger = 0
+    val leftPart = n / 1000
+    val rightPart = n % 1000
+    val strLeftPart = halfOfRussian(leftPart, true)
+    val strRightPart = halfOfRussian(rightPart, false)
+    return when {
+        (trigger == 4) -> strRightPart
+        (trigger == 1) -> (strLeftPart + " тысяча " + strRightPart).trim()
+        (trigger == 2) -> (strLeftPart + " тысячи " + strRightPart).trim()
+        else -> (strLeftPart + " тысяч " + strRightPart).trim()
+    }
+
+}
+
+
+fun russianNumeral(n: Int) = when {
+    (n == 1) -> "один"
+    (n == 2) -> "два"
+    (n == 3) -> "три"
+    (n == 4) -> "четыре"
+    (n == 5) -> "пять"
+    (n == 6) -> "шесть"
+    (n == 7) -> "семь"
+    (n == 8) -> "восемь"
+    (n == 9) -> "девять"
+    (n == 10) -> "десять"
+    (n == 11) -> "одиннадцать"
+    (n == 12) -> "двенадцать"
+    (n == 13) -> "тринадцать"
+    (n == 14) -> "четырнадцать"
+    (n == 15) -> "пятнадцать"
+    (n == 16) -> "шестнадцать"
+    (n == 17) -> "семнадцать"
+    (n == 18) -> "восемнадцать"
+    (n == 19) -> "девятнадцать"
+    else -> ""
+
+}
+
+fun halfOfRussian(number: Int, isLeft: Boolean): String {
+    var n = number
+    var resString = ""
+    if (number > 0) {
+        if (n % 100 in 10..19) {
+            resString += russianNumeral(n % 100)
+            n /= 100
+            when {
+                (n == 1) -> resString = "сто " + resString
+                (n == 2) -> resString = "двести " + resString
+                (n in 3..4) -> resString = russianNumeral(n) + "ста " + resString
+                (n in 5..9) -> resString = russianNumeral(n) + "сот " + resString
+            }
+        } else {
+            if (isLeft && n % 10 == 1) trigger = 1 else if (isLeft && (n % 10 in 2..4)) trigger = 2
+            when {
+                (isLeft && n % 10 == 1) -> resString += "одна"
+                (isLeft && n % 10 == 2) -> resString += "две"
+                else -> if (n % 10 != 0) resString += russianNumeral(n % 10)
+            }
+            n /= 10
+
+            when {
+                (n % 10 in 2..3) -> resString = russianNumeral(n % 10) + "дцать " + resString
+                (n % 10 == 4) -> resString = "сорок " + resString
+                (n % 10 in 5..8) -> resString = russianNumeral(n % 10) + "десят " + resString
+                (n % 10 == 9) -> resString = "девяносто " + resString
+            }
+            n /= 10
+            when {
+                (n == 1) -> resString = "сто " + resString
+                (n == 2) -> resString = "двести " + resString
+                (n in 3..4) -> resString = russianNumeral(n) + "ста " + resString
+                (n in 5..9) -> resString = russianNumeral(n) + "сот " + resString
+            }
+
+        }
+    } else if (isLeft) {
+        trigger = 4
+    }
+
+    return resString.trim()
+}
