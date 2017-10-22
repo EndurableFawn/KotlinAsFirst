@@ -147,7 +147,6 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  */
 fun times(a: List<Double>, b: List<Double>): Double {
     var c = 0.0
-    if (a.isEmpty() && b.isEmpty()) return 0.0
     for (i in 0 until a.size) {
         c += a[i] * b[i]
     }
@@ -181,10 +180,8 @@ fun polynom(p: List<Double>, x: Double): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
-    var currentSum = 0.0
-    for (i in 0 until list.size) {
-        currentSum += list[i]
-        list[i] = currentSum
+    for (i in 1 until list.size) {
+        list[i] += list[i - 1]
     }
     return list
 }
@@ -200,13 +197,13 @@ fun factorize(n: Int): List<Int> {
     var number = n
     val result = mutableListOf<Int>()
     if (isPrime(n)) return listOf(n)
-    for (i in 2..n / 2) {
+    for (i in 2..Math.ceil(n.toDouble() / 2).toInt()) {
         if (isPrime(i)) {
             while (number % i == 0) {
                 result.add(i)
                 number /= i
             }
-            if (result.fold(1.0) { previousResult, element -> element * previousResult } == n.toDouble()) return result
+            if (result.fold(1.0) { prev, elem -> elem * prev } == n.toDouble()) return result
         }
     }
     return result
@@ -247,7 +244,10 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
+    // difference between the letter code in Unicode and it's value in the number system
     val fromElementToLetterUsingUnicode = 87
+
+    //difference between the number code in Unicode and it's value in the number system
     val fromElementToNumberUsingUnicode = 48
     val list = convert(n, base)
     var result = ""
@@ -284,7 +284,10 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Например: str = "13c", base = 14 -> 250
  */
 fun decimalFromString(str: String, base: Int): Int {
+    // difference between the letter code in Unicode and it's value in the number system
     val fromUnicodeLetterToNumber = 87
+
+    //difference between the number code in Unicode and it's value in the number system
     val fromUnicodeNumberToNumber = 48
     val lowercaseAInUnicode = 97
     val list = mutableListOf<Int>()
@@ -304,61 +307,17 @@ fun decimalFromString(str: String, base: Int): Int {
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 fun roman(n: Int): String {
-    var result = ""
     var number = n
-    while (number >= 1000) {
-        result += "M"
-        number -= 1000
+    val res = StringBuilder()
+    val listForNumbers = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    val listForStrings = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    for (i in 0..12) {
+        while (number >= listForNumbers[i]) {
+            res.append(listForStrings[i])
+            number -= listForNumbers[i]
+        }
     }
-    if (number >= 900) {
-        result += "CM"
-        number -= 900
-    }
-    while (number >= 500) {
-        result += "D"
-        number -= 500
-    }
-    if (number >= 400) {
-        result += "CD"
-        number -= 400
-    }
-    while (number >= 100) {
-        result += "C"
-        number -= 100
-    }
-    if (number >= 90) {
-        result += "XC"
-        number -= 90
-    }
-    while (number >= 50) {
-        result += "L"
-        number -= 50
-    }
-    if (number >= 40) {
-        result += "XL"
-        number -= 40
-    }
-    while (number >= 10) {
-        result += "X"
-        number -= 10
-    }
-    if (number >= 9) {
-        result += "IX"
-        number -= 9
-    }
-    while (number >= 5) {
-        result += "V"
-        number -= 5
-    }
-    if (number >= 4) {
-        result += "IV"
-        number -= 4
-    }
-    while (number >= 1) {
-        result += "I"
-        number -= 1
-    }
-    return result
+    return res.toString()
 }
 
 /**
@@ -376,13 +335,8 @@ fun russian(n: Int): String {
     val rightPart = n % 1000
     val strLeftPart = halfOfRussian(leftPart, true)
     val strRightPart = halfOfRussian(rightPart, false)
-    return when {
-        (trigger == 4) -> strRightPart
-        (trigger == 1) -> (strLeftPart + " тысяча " + strRightPart).trim()
-        (trigger == 2) -> (strLeftPart + " тысячи " + strRightPart).trim()
-        else -> (strLeftPart + " тысяч " + strRightPart).trim()
-    }
-
+    val triggerList = listOf<String>(" тысяч ", " тысячи ", " тысячи ", "")
+    return (strLeftPart + triggerList[trigger] + strRightPart).trim()
 }
 
 
@@ -417,12 +371,7 @@ fun halfOfRussian(number: Int, isLeft: Boolean): String {
         if (n % 100 in 10..19) {
             resString += russianNumeral(n % 100)
             n /= 100
-            when {
-                (n == 1) -> resString = "сто " + resString
-                (n == 2) -> resString = "двести " + resString
-                (n in 3..4) -> resString = russianNumeral(n) + "ста " + resString
-                (n in 5..9) -> resString = russianNumeral(n) + "сот " + resString
-            }
+            resString = russianHundreds(resString, n)
         } else {
             if (isLeft && n % 10 == 1) trigger = 1 else if (isLeft && (n % 10 in 2..4)) trigger = 2
             when {
@@ -439,17 +388,22 @@ fun halfOfRussian(number: Int, isLeft: Boolean): String {
                 (n % 10 == 9) -> resString = "девяносто " + resString
             }
             n /= 10
-            when {
-                (n == 1) -> resString = "сто " + resString
-                (n == 2) -> resString = "двести " + resString
-                (n in 3..4) -> resString = russianNumeral(n) + "ста " + resString
-                (n in 5..9) -> resString = russianNumeral(n) + "сот " + resString
-            }
+            resString = russianHundreds(resString, n)
 
         }
     } else if (isLeft) {
-        trigger = 4
+        trigger = 3
     }
 
     return resString.trim()
+}
+
+fun russianHundreds(str: String, n: Int): String {
+    return when {
+        (n == 1) -> "сто " + str
+        (n == 2) -> "двести " + str
+        (n in 3..4) -> russianNumeral(n) + "ста " + str
+        (n in 5..9) -> russianNumeral(n) + "сот " + str
+        else -> "" + str
+    }
 }

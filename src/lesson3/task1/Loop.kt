@@ -80,7 +80,17 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = if (n < 3) 1 else fib(n - 1) + fib(n - 2)
+fun fib(n: Int): Int {
+    var fib1 = 0
+    var fib2 = 1
+    var fib3 = 0
+    for (i in 1..n) {
+        fib1 = fib2
+        fib2 = fib3
+        fib3 = fib2 + fib1
+    }
+    return fib3
+}
 
 /**
  * Простая
@@ -91,21 +101,12 @@ fun fib(n: Int): Int = if (n < 3) 1 else fib(n - 1) + fib(n - 2)
 fun lcm(m: Int, n: Int): Int {
     var number1 = n
     var number2 = m
-    var k = 1
-    if (m == n) return m
-    if (isCoPrime(m, n)) {
-        return m * n
+    while (number1 != 0 && number2 != 0) {
+        if (number1 >= number2) number1 %= number2
+        else number2 %= number1
     }
-    for (i in 2..max(m, n)) {
-        if (isPrime(i)) {
-            while (number1 % i == 0 || number2 % i == 0) {
-                k *= i
-                if (number1 % i == 0) number1 /= i
-                if (number2 % i == 0) number2 /= i
-            }
-        }
-    }
-    return k
+    val mcd = number1 + number2
+    return m * n / mcd
 }
 
 /**
@@ -178,10 +179,7 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {
     var number = x
-    while (abs(number) >= 2 * PI) {
-        if (number > 0) number -= 2 * PI else number += 2 * PI
-
-    }
+    if (abs(number) >= 2 * PI) number %= 2 * PI
     var result = 0.0
     var count = 0
     for (i in 1..Int.MAX_VALUE step 2) {
@@ -202,9 +200,7 @@ fun sin(x: Double, eps: Double): Double {
  */
 fun cos(x: Double, eps: Double): Double {
     var number = x
-    while (abs(number) >= 2 * PI) {
-        if (number > 0) number -= 2 * PI else number += 2 * PI
-    }
+    if (abs(number) >= 2 * PI) number %= 2 * PI
     var result = 1.0
     var count = 1
     for (i in 2..Int.MAX_VALUE step 2) {
@@ -222,15 +218,15 @@ fun cos(x: Double, eps: Double): Double {
  * Поменять порядок цифр заданного числа n на обратный: 13478 -> 87431.
  * Не использовать строки при решении задачи.
  */
-fun revert(n: Int): Int {
+fun revert(n: Int): Long {
     var startNumber = n
-    var resultNumber = 0.0
+    var resultNumber = 0L
     do {
         resultNumber *= 10
         resultNumber += startNumber % 10
         startNumber /= 10
     } while (startNumber > 0)
-    return resultNumber.toInt()
+    return resultNumber
 }
 
 /**
@@ -240,7 +236,7 @@ fun revert(n: Int): Int {
  * первая цифра равна последней, вторая -- предпоследней и так далее.
  * 15751 -- палиндром, 3653 -- нет.
  */
-fun isPalindrome(n: Int) = revertDouble(n) == n.toDouble()
+fun isPalindrome(n: Int) = revert(n) == n.toLong()
 
 /**
  * Средняя
@@ -306,13 +302,4 @@ fun fibSequenceDigit(n: Int): Int {
     return fib3 % 10
 }
 
-fun revertDouble(n: Int): Double {
-    var startNumber = n
-    var resultNumber = 0.0
-    do {
-        resultNumber *= 10
-        resultNumber += startNumber % 10
-        startNumber /= 10
-    } while (startNumber > 0)
-    return resultNumber
-}
+

@@ -155,6 +155,7 @@ class Tests {
         assertEquals(0.0, sin(Math.PI, 1e-5), 1e-5)
         assertEquals(-1.0, sin(3.0 * Math.PI / 2.0, 1e-5), 1e-5)
         assertEquals(0.0, sin(100 * Math.PI, 1e-5), 1e-5)
+        assertEquals(1.0, sin(-7.0 * Math.PI / 2.0, 1e-5), 1e-5)
     }
 
     @Test
@@ -165,6 +166,7 @@ class Tests {
         assertEquals(-1.0, cos(Math.PI, 1e-5), 1e-5)
         assertEquals(0.0, cos(3.0 * Math.PI / 2.0, 1e-5), 1e-5)
         assertEquals(1.0, cos(100 * Math.PI, 1e-5), 1e-5)
+        assertEquals(-1.0, cos(-99 * Math.PI, 1e-5), 1e-5)
     }
 
     @Test
