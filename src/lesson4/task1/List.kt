@@ -335,7 +335,7 @@ fun russian(n: Int): String {
     val rightPart = n % 1000
     val strLeftPart = halfOfRussian(leftPart, true)
     val strRightPart = halfOfRussian(rightPart, false)
-    val triggerList = listOf<String>(" тысяч ", " тысячи ", " тысячи ", "")
+    val triggerList = listOf<String>(" тысяч ", " тысяча ", " тысячи ", "")
     return (strLeftPart + triggerList[trigger] + strRightPart).trim()
 }
 
