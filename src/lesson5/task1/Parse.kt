@@ -245,8 +245,8 @@ fun mostExpensive(description: String): String {
     for (elem in bigParts) {
         val smallPart = elem.split(" ")
         try {
-            if ((smallPart.size != 2) || smallPart[1].toDouble() < 0) return ""
-            if (smallPart[1].toDouble() > max) {
+            if ((smallPart.size != 2) || smallPart[1].toDouble() < 0.0) return ""
+            if (smallPart[1].toDouble() >= max) {
                 max = smallPart[1].toDouble()
                 res = smallPart[0]
             }
@@ -291,7 +291,7 @@ fun fromRoman(roman: String): Int {
             trigger = 0
         }
     }
-    return resList.sum()
+    return if (resList.isNotEmpty()) resList.sum() else -1
 }
 
 /**
