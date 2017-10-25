@@ -80,16 +80,22 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
+val listOfFib = mutableListOf(0, 1)
+var fib1 = 0
+var fib2 = 1
+var cNum = 1
 fun fib(n: Int): Int {
-    var fib1 = 0
-    var fib2 = 1
-    var fib3 = 0
-    for (i in 1..n) {
+    try {
+        return listOfFib[n]
+    } catch (e: IndexOutOfBoundsException) {
+        for (i in cNum + 1..n) {
+            listOfFib.add(i, fib1 + fib2)
         fib1 = fib2
-        fib2 = fib3
-        fib3 = fib2 + fib1
+            fib2 = listOfFib[i]
     }
-    return fib3
+        cNum = n
+    }
+    return listOfFib[n]
 }
 
 /**
@@ -141,14 +147,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    if (m == 1 && n == 1) return true
-    if (m == n) return false
-    for (i in 2..max(n, m) / 2) {
-        if (m % i == 0 && n % i == 0) return false
-    }
-    return true
-}
+fun isCoPrime(m: Int, n: Int) = (lcm(m, n) == m * n)
 
 /**
  * Простая
@@ -218,7 +217,18 @@ fun cos(x: Double, eps: Double): Double {
  * Поменять порядок цифр заданного числа n на обратный: 13478 -> 87431.
  * Не использовать строки при решении задачи.
  */
-fun revert(n: Int): Long {
+fun revert(n: Int): Int {
+    var startNumber = n
+    var resultNumber = 0
+    do {
+        resultNumber *= 10
+        resultNumber += startNumber % 10
+        startNumber /= 10
+    } while (startNumber > 0)
+    return resultNumber
+}
+
+fun revertL(n: Int): Long {
     var startNumber = n
     var resultNumber = 0L
     do {
@@ -236,7 +246,7 @@ fun revert(n: Int): Long {
  * первая цифра равна последней, вторая -- предпоследней и так далее.
  * 15751 -- палиндром, 3653 -- нет.
  */
-fun isPalindrome(n: Int) = revert(n) == n.toLong()
+fun isPalindrome(n: Int) = revertL(n) == n.toLong()
 
 /**
  * Средняя

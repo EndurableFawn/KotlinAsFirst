@@ -203,7 +203,8 @@ fun factorize(n: Int): List<Int> {
                 result.add(i)
                 number /= i
             }
-            if (result.fold(1.0) { prev, elem -> elem * prev } == n.toDouble()) return result
+            if (result.fold(1.0) { prev, elem -> elem * prev } ==
+                    n.toDouble()) return result
         }
     }
     return result
@@ -292,7 +293,8 @@ fun decimalFromString(str: String, base: Int): Int {
     val lowercaseAInUnicode = 97
     val list = mutableListOf<Int>()
     for (element in str) {
-        if (element.toInt() >= lowercaseAInUnicode) list.add(element.toInt() - fromUnicodeLetterToNumber)
+        if (element.toInt() >= lowercaseAInUnicode)
+            list.add(element.toInt() - fromUnicodeLetterToNumber)
         else list.add(element.toInt() - fromUnicodeNumberToNumber)
     }
     return decimal(list, base)
@@ -310,7 +312,8 @@ fun roman(n: Int): String {
     var number = n
     val res = StringBuilder()
     val listForNumbers = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
-    val listForStrings = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val listForStrings = listOf("M", "CM", "D", "CD", "C", "XC",
+            "L", "XL", "X", "IX", "V", "IV", "I")
     for (i in 0..12) {
         while (number >= listForNumbers[i]) {
             res.append(listForStrings[i])
@@ -373,7 +376,8 @@ fun halfOfRussian(number: Int, isLeft: Boolean): String {
             n /= 100
             resString = russianHundreds(resString, n)
         } else {
-            if (isLeft && n % 10 == 1) trigger = 1 else if (isLeft && (n % 10 in 2..4)) trigger = 2
+            if (isLeft && n % 10 == 1) trigger = 1
+            else if (isLeft && (n % 10 in 2..4)) trigger = 2
             when {
                 (isLeft && n % 10 == 1) -> resString += "одна"
                 (isLeft && n % 10 == 2) -> resString += "две"

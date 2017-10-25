@@ -68,23 +68,15 @@ fun main(args: Array<String>) {
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
     if (parts.size != 3) return ""
-    val months = listOf<String>("", "января", "февраля", "марта", "апреля", "мая",
+    val months = listOf<String>("января", "февраля", "марта", "апреля", "мая",
             "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
-    var monthsInInt = 0
     try {
         if ((parts[0].toInt() !in 0..31) || (parts[2].toInt() < 0)) return ""
     } catch (e: NumberFormatException) {
         return ""
-    } catch (e: IndexOutOfBoundsException) {
-        return ""
     }
-    for ((index, element) in months.withIndex()) {
-        if (parts[1] == element) {
-            monthsInInt = index
-            break
-        }
-    }
-    if (monthsInInt == 0) return ""
+    val monthsInInt = months.indexOf(parts[1]) + 1
+    if (monthsInInt <= 0) return ""
     return String.format("%02d.%02d.%d", parts[0].toInt(), monthsInInt, parts[2].toInt())
 }
 
@@ -98,7 +90,7 @@ fun dateStrToDigit(str: String): String {
 fun dateDigitToStr(digital: String): String {
     val parts = digital.split(".")
 
-    val months = listOf<String>("", "января", "февраля", "марта", "апреля", "мая",
+    val months = listOf<String>("января", "февраля", "марта", "апреля", "мая",
             "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
     try {
         if ((parts[0].toInt() !in 0..31) || (parts.size != 3) ||
@@ -109,7 +101,7 @@ fun dateDigitToStr(digital: String): String {
         return ""
     }
 
-    return "${parts[0].toInt()} ${months[parts[1].toInt()]} ${parts[2].toInt()}"
+    return "${parts[0].toInt()} ${months[parts[1].toInt() - 1]} ${parts[2].toInt()}"
 }
 
 /**
@@ -127,10 +119,12 @@ fun dateDigitToStr(digital: String): String {
 fun flattenPhoneNumber(phone: String): String {
     val parts = phone.split(" ", "-", ")", "(")
     for ((index, elem) in parts.withIndex()) {
-        try {
-            val check = elem.toInt()
-        } catch (e: NumberFormatException) {
-            if (((index != 0) || (elem[0] != '+')) && (elem != "")) return ""
+        if (elem != "") {
+            try {
+                val check = elem.toInt()
+            } catch (e: NumberFormatException) {
+                if ((index != 0) || (elem[0] != '+')) return ""
+            }
         }
     }
     return parts.joinToString(separator = "")
@@ -147,7 +141,7 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    var max = 0
+    var max = -1
     val parts = jumps.split(" ", "-", "%")
     for (elem in parts) {
         try {
@@ -156,7 +150,7 @@ fun bestLongJump(jumps: String): Int {
             if (elem != "") return -1
         }
     }
-    return if (max > 0) max else -1
+    return if (max > -1) max else -1
 }
 
 /**
@@ -179,7 +173,7 @@ fun bestHighJump(jumps: String): Int {
 
         } catch (e: NumberFormatException) {
             for (el in parts[i]) {
-                if ((el != '+') && (el != '-') && (el != '%')) return -1
+                if (el !in listOf('+', '-', '%')) return -1
             }
         }
     }
@@ -198,7 +192,7 @@ fun bestHighJump(jumps: String): Int {
 fun plusMinus(expression: String): Int {
     val parts = expression.split(" ")
     for (i in 1 until parts.size step 2) {
-        if ((parts[i] != "+") && (parts[i] != "-")) throw IllegalArgumentException()
+        if (parts[i] !in listOf("+", "-")) throw IllegalArgumentException()
     }
     val resList = mutableListOf<Int>()
     try {
@@ -251,7 +245,7 @@ fun mostExpensive(description: String): String {
     for (elem in bigParts) {
         val smallPart = elem.split(" ")
         try {
-            if ((smallPart.size != 2) || smallPart[1].toDouble() <= 0) return ""
+            if ((smallPart.size != 2) || smallPart[1].toDouble() < 0) return ""
             if (smallPart[1].toDouble() > max) {
                 max = smallPart[1].toDouble()
                 res = smallPart[0]
@@ -274,7 +268,31 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    val romanNumbers = listOf("I", "V", "X", "L", "C", "D", "M")
+    val resList = mutableListOf<Int>()
+    val decNumbers = listOf(1, 5, 10, 50, 100, 500, 1000)
+    for (elem in roman) {
+        try {
+            resList.add(decNumbers[romanNumbers.indexOf("$elem")])
+        } catch (e: IndexOutOfBoundsException) {
+            return -1
+        }
+    }
+    var trigger = 1
+    for (i in 0 until resList.size - 1) {
+        if (trigger == 0) {
+            trigger = 1
+            continue
+        }
+        if (resList[i + 1] > resList[i]) {
+            resList[i + 1] = resList[i + 1] - resList[i]
+            resList[i] = 0
+            trigger = 0
+        }
+    }
+    return resList.sum()
+}
 
 /**
  * Очень сложная
@@ -312,4 +330,75 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    var stringCounter = 0
+    var limitCounter = 0
+    var detector = Math.floor(cells.toDouble() / 2).toInt()
+    val parts = commands.split("").subList(1, commands.length + 1)
+    val conveyor = mutableListOf<Int>()
+    for (i in 0 until cells) {
+        conveyor.add(0)
+    }
+    while (stringCounter < parts.size) {
+        if (limitCounter >= limit) break else limitCounter++
+        if (parts[stringCounter] !in listOf("<", ">", "+", "-", "[", "]", " ")) {
+            throw IllegalArgumentException()
+        }
+        when (parts[stringCounter]) {
+            "<" -> detector--
+            ">" -> detector++
+            "+" -> conveyor[detector]++
+            "-" -> conveyor[detector]--
+            "[" -> {
+                if (conveyor[detector] == 0) {
+                    var counter = 0
+                    try {
+                        for (i in stringCounter + 1 until parts.size) {
+                            if (parts[i] == "[") counter++
+                            if (parts[i] == "]") {
+                                if (counter == 0) {
+                                    stringCounter = i
+                                    break
+                                } else counter--
+                            }
+                        }
+                    } catch (e: IndexOutOfBoundsException) {
+                        throw IllegalArgumentException()
+                    }
+
+                }
+
+            }
+            "]" -> {
+                if (conveyor[detector] != 0) {
+                    var counter = 0
+                    try {
+                        for (i in stringCounter - 1 downTo 0) {
+                            if (parts[i] == "]") counter++
+                            if (parts[i] == "[") {
+                                if (counter == 0) {
+                                    stringCounter = i
+                                    break
+                                } else counter--
+                            }
+                        }
+                    } catch (e: IndexOutOfBoundsException) {
+                        throw IllegalArgumentException()
+                    }
+
+                }
+
+            }
+            else -> {
+            }
+        }
+        try {
+            val check = conveyor[detector]
+        } catch (e: IndexOutOfBoundsException) {
+            throw IllegalStateException()
+        }
+        stringCounter++
+    }
+    return conveyor
+}
