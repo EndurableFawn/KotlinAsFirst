@@ -118,12 +118,12 @@ fun dateDigitToStr(digital: String): String {
  */
 fun flattenPhoneNumber(phone: String): String {
     val parts = phone.split(" ", "-", ")", "(")
-    for ((index, elem) in parts.withIndex()) {
+    for (elem in parts) {
         if (elem != "") {
             try {
                 val check = elem.toInt()
             } catch (e: NumberFormatException) {
-                if ((index != 0) || (elem[0] != '+')) return ""
+                return ""
             }
         }
     }
@@ -164,7 +164,7 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    var max = 0
+    var max = -1
     val parts = jumps.split(" ")
     for (i in 0 until parts.size - 1) {
         try {
@@ -177,7 +177,7 @@ fun bestHighJump(jumps: String): Int {
             }
         }
     }
-    return if (max > 0) max else -1
+    return if (max > -1) max else -1
 }
 
 /**
