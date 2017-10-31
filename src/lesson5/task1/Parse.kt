@@ -340,6 +340,12 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     for (i in 0 until cells) {
         conveyor.add(0)
     }
+    var brackets = 0
+    for (elem in parts) {
+        if (elem == "[") brackets++
+        if (elem == "]") brackets--
+    }
+    if (brackets != 0) throw IllegalArgumentException()
     while (stringCounter < parts.size) {
         if (limitCounter >= limit) break else limitCounter++
         if (parts[stringCounter] !in listOf("<", ">", "+", "-", "[", "]", " ")) {
@@ -354,7 +360,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 if (conveyor[detector] == 0) {
                     var counter = 0
                     try {
-                        for (i in stringCounter + 1 until parts.size) {
+                        for (i in stringCounter + 1..Int.MAX_VALUE) {
                             if (parts[i] == "[") counter++
                             if (parts[i] == "]") {
                                 if (counter == 0) {
@@ -374,7 +380,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 if (conveyor[detector] != 0) {
                     var counter = 0
                     try {
-                        for (i in stringCounter - 1 downTo 0) {
+                        for (i in stringCounter - 1 downTo -1) {
                             if (parts[i] == "]") counter++
                             if (parts[i] == "[") {
                                 if (counter == 0) {
