@@ -65,18 +65,19 @@ fun main(args: Array<String>) {
  * День и месяц всегда представлять двумя цифрами, например: 03.04.2011.
  * При неверном формате входной строки вернуть пустую строку
  */
+val months = listOf("января", "февраля", "марта", "апреля", "мая",
+        "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
+
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
     if (parts.size != 3) return ""
-    val months = listOf<String>("января", "февраля", "марта", "апреля", "мая",
-            "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
     try {
         if ((parts[0].toInt() !in 0..31) || (parts[2].toInt() < 0)) return ""
     } catch (e: NumberFormatException) {
         return ""
     }
     val monthsInInt = months.indexOf(parts[1]) + 1
-    if (monthsInInt <= 0) return ""
+    if (monthsInInt == 0) return ""
     return String.format("%02d.%02d.%d", parts[0].toInt(), monthsInInt, parts[2].toInt())
 }
 
@@ -89,9 +90,6 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val parts = digital.split(".")
-
-    val months = listOf<String>("января", "февраля", "марта", "апреля", "мая",
-            "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
     try {
         if ((parts[0].toInt() !in 0..31) || (parts.size != 3) ||
                 (parts[1].toInt() !in 1..12) || (parts[2].toInt() < 0)) return ""
@@ -150,7 +148,7 @@ fun bestLongJump(jumps: String): Int {
             if (elem != "") return -1
         }
     }
-    return if (max > -1) max else -1
+    return max
 }
 
 /**
@@ -177,7 +175,7 @@ fun bestHighJump(jumps: String): Int {
             }
         }
     }
-    return if (max > -1) max else -1
+    return max
 }
 
 /**
@@ -334,35 +332,31 @@ fun fromRoman(roman: String): Int {
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var stringCounter = 0
     var limitCounter = 0
-    var detector = Math.floor(cells.toDouble() / 2).toInt()
-    val parts = commands.split("").subList(1, commands.length + 1)
-    val conveyor = mutableListOf<Int>()
-    for (i in 0 until cells) {
-        conveyor.add(0)
-    }
+    var detector = cells / 2
+    val conveyor = MutableList(cells, { 0 })
     var brackets = 0
-    for (elem in parts) {
-        if (elem == "[") brackets++
-        if (elem == "]") brackets--
+    for (elem in commands) {
+        if (elem == '[') brackets++
+        if (elem == ']') brackets--
     }
     if (brackets != 0) throw IllegalArgumentException()
-    while (stringCounter < parts.size) {
+    while (stringCounter < commands.length) {
         if (limitCounter >= limit) break else limitCounter++
-        if (parts[stringCounter] !in listOf("<", ">", "+", "-", "[", "]", " ")) {
+        if (commands[stringCounter] !in listOf('<', '>', '+', '-', '[', ']', ' ')) {
             throw IllegalArgumentException()
         }
-        when (parts[stringCounter]) {
-            "<" -> detector--
-            ">" -> detector++
-            "+" -> conveyor[detector]++
-            "-" -> conveyor[detector]--
-            "[" -> {
+        when (commands[stringCounter]) {
+            '<' -> detector--
+            '>' -> detector++
+            '+' -> conveyor[detector]++
+            '-' -> conveyor[detector]--
+            '[' -> {
                 if (conveyor[detector] == 0) {
                     var counter = 0
                     try {
-                        for (i in stringCounter + 1..Int.MAX_VALUE) {
-                            if (parts[i] == "[") counter++
-                            if (parts[i] == "]") {
+                        for (i in stringCounter + 1..commands.length) {
+                            if (commands[i] == '[') counter++
+                            if (commands[i] == ']') {
                                 if (counter == 0) {
                                     stringCounter = i
                                     break
@@ -376,13 +370,13 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 }
 
             }
-            "]" -> {
+            ']' -> {
                 if (conveyor[detector] != 0) {
                     var counter = 0
                     try {
                         for (i in stringCounter - 1 downTo -1) {
-                            if (parts[i] == "]") counter++
-                            if (parts[i] == "[") {
+                            if (commands[i] == ']') counter++
+                            if (commands[i] == '[') {
                                 if (counter == 0) {
                                     stringCounter = i
                                     break

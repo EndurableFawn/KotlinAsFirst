@@ -251,12 +251,12 @@ fun convertToString(n: Int, base: Int): String {
     //difference between the number code in Unicode and it's value in the number system
     val fromElementToNumberUsingUnicode = 48
     val list = convert(n, base)
-    var result = ""
+    var result = StringBuilder()
     for (element in list) {
-        result += if (element > 9) (element + fromElementToLetterUsingUnicode).toChar()
-        else (element + fromElementToNumberUsingUnicode).toChar()
+        result.append(if (element > 9) (element + fromElementToLetterUsingUnicode).toChar()
+        else (element + fromElementToNumberUsingUnicode).toChar())
     }
-    return result
+    return result.toString()
 }
 
 /**

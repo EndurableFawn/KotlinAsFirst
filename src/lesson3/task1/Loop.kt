@@ -80,23 +80,8 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-val listOfFib = mutableListOf(0, 1)
-var fib1 = 0
-var fib2 = 1
-var cNum = 1
-fun fib(n: Int): Int {
-    try {
-        return listOfFib[n]
-    } catch (e: IndexOutOfBoundsException) {
-        for (i in cNum + 1..n) {
-            listOfFib.add(i, fib1 + fib2)
-        fib1 = fib2
-            fib2 = listOfFib[i]
-    }
-        cNum = n
-    }
-    return listOfFib[n]
-}
+fun fib(n: Int) = ((pow((1 + sqrt(5.0)) / 2, n.toDouble()) -
+        pow((1 - sqrt(5.0)) / 2, n.toDouble())) / sqrt(5.0)).toInt()
 
 /**
  * Простая
