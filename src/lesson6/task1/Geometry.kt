@@ -227,6 +227,7 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
             Circle(Point(Double.MAX_VALUE - 1, Double.MAX_VALUE - 1), 1.0))
     for (i in 0 until circles.size) {
         for (j in i + 1 until circles.size) {
+            if (circles[i] == circles[j]) continue
             if (circles[i].distance(circles[j]) < min) {
                 min = circles[i].distance(circles[j])
                 minPair = Pair(circles[i], circles[j])
@@ -272,8 +273,8 @@ fun minContainingCircle(vararg points: Point): Circle {
     if (points.size == 1) return Circle(points[0], 0.0)
     val diameter = diameter(*points)
     for (i in 0 until points.size) {
-        if ((diameter.center().distance(points[i]) >
-                diameter.begin.distance(diameter.end) / 2) &&
+        if ((diameter.center().distance(points[i]) -
+                diameter.begin.distance(diameter.end) / 2 > 1e-7) &&
                 (diameter.center().distance(points[i]) > maxDis)) {
             maxDis = diameter.center().distance(points[i])
             maxPoint = points[i]
