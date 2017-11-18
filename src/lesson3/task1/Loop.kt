@@ -81,7 +81,7 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int) = Math.round((pow((1 + sqrt(5.0)) / 2, n.toDouble()) -
-        pow((1 - sqrt(5.0)) / 2, n.toDouble())) / sqrt(5.0))
+        pow((1 - sqrt(5.0)) / 2, n.toDouble())) / sqrt(5.0)).toInt()
 
 /**
  * Простая
