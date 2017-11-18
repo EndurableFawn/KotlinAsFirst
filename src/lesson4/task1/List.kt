@@ -314,7 +314,7 @@ fun roman(n: Int): String {
     val listForNumbers = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
     val listForStrings = listOf("M", "CM", "D", "CD", "C", "XC",
             "L", "XL", "X", "IX", "V", "IV", "I")
-    for (i in 0..12) {
+    for (i in 0 until listForNumbers.size) {
         while (number >= listForNumbers[i]) {
             res.append(listForStrings[i])
             number -= listForNumbers[i]
@@ -338,58 +338,40 @@ fun russian(n: Int): String {
     val rightPart = n % 1000
     val strLeftPart = halfOfRussian(leftPart, true)
     val strRightPart = halfOfRussian(rightPart, false)
-    val triggerList = listOf<String>(" тысяч ", " тысяча ", " тысячи ", "")
+    val triggerList = listOf(" тысяч ", " тысяча ", " тысячи ", "")
     return (strLeftPart + triggerList[trigger] + strRightPart).trim()
 }
 
-
-fun russianNumeral(n: Int) = when {
-    (n == 1) -> "один"
-    (n == 2) -> "два"
-    (n == 3) -> "три"
-    (n == 4) -> "четыре"
-    (n == 5) -> "пять"
-    (n == 6) -> "шесть"
-    (n == 7) -> "семь"
-    (n == 8) -> "восемь"
-    (n == 9) -> "девять"
-    (n == 10) -> "десять"
-    (n == 11) -> "одиннадцать"
-    (n == 12) -> "двенадцать"
-    (n == 13) -> "тринадцать"
-    (n == 14) -> "четырнадцать"
-    (n == 15) -> "пятнадцать"
-    (n == 16) -> "шестнадцать"
-    (n == 17) -> "семнадцать"
-    (n == 18) -> "восемнадцать"
-    (n == 19) -> "девятнадцать"
-    else -> ""
-
-}
+val russianNumeral = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь",
+        "восемь", "девять", "десять", "одиннадцать", "двенадцать", "тринадцать",
+        "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
 
 fun halfOfRussian(number: Int, isLeft: Boolean): String {
+
     var n = number
-    var resString = ""
+    var resString = StringBuilder()
     if (number > 0) {
         if (n % 100 in 10..19) {
-            resString += russianNumeral(n % 100)
+            resString.append(russianNumeral[n % 100])
             n /= 100
             resString = russianHundreds(resString, n)
         } else {
             if (isLeft && n % 10 == 1) trigger = 1
             else if (isLeft && (n % 10 in 2..4)) trigger = 2
             when {
-                (isLeft && n % 10 == 1) -> resString += "одна"
-                (isLeft && n % 10 == 2) -> resString += "две"
-                else -> if (n % 10 != 0) resString += russianNumeral(n % 10)
+                (isLeft && n % 10 == 1) -> resString.append("одна")
+                (isLeft && n % 10 == 2) -> resString.append("две")
+                else -> if (n % 10 != 0) resString.append(russianNumeral[n % 10])
             }
             n /= 10
 
             when {
-                (n % 10 in 2..3) -> resString = russianNumeral(n % 10) + "дцать " + resString
-                (n % 10 == 4) -> resString = "сорок " + resString
-                (n % 10 in 5..8) -> resString = russianNumeral(n % 10) + "десят " + resString
-                (n % 10 == 9) -> resString = "девяносто " + resString
+                (n % 10 in 2..3) -> resString = StringBuilder(russianNumeral[n % 10]
+                        + "дцать ").append(resString)
+                (n % 10 == 4) -> resString = StringBuilder("сорок ").append(resString)
+                (n % 10 in 5..8) -> resString = StringBuilder(russianNumeral[n % 10] +
+                        "десят ").append(resString)
+                (n % 10 == 9) -> resString = StringBuilder("девяносто ").append(resString)
             }
             n /= 10
             resString = russianHundreds(resString, n)
@@ -399,15 +381,17 @@ fun halfOfRussian(number: Int, isLeft: Boolean): String {
         trigger = 3
     }
 
-    return resString.trim()
+    return resString.toString().trim()
 }
 
-fun russianHundreds(str: String, n: Int): String {
-    return when {
+fun russianHundreds(str: StringBuilder, n: Int): StringBuilder {
+    var res = StringBuilder()
+    res.append(when {
         (n == 1) -> "сто " + str
         (n == 2) -> "двести " + str
-        (n in 3..4) -> russianNumeral(n) + "ста " + str
-        (n in 5..9) -> russianNumeral(n) + "сот " + str
+        (n in 3..4) -> russianNumeral[n] + "ста " + str
+        (n in 5..9) -> russianNumeral[n] + "сот " + str
         else -> "" + str
-    }
+    })
+    return res
 }
