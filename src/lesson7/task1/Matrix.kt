@@ -62,7 +62,8 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
     override fun get(row: Int, column: Int): E = get(Cell(row, column))
 
     override fun get(cell: Cell): E {
-        if (map[cell] == null) throw IndexOutOfBoundsException()
+        if (map[cell] == null) throw
+        IndexOutOfBoundsException("map[${cell.row},${cell.column}] is not exist")
         return map[cell]!!
     }
 
