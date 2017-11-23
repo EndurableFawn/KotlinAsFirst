@@ -336,6 +336,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     val conveyor = MutableList(cells, { 0 })
     var brackets = 0
     for (elem in commands) {
+        if (elem == ']' && brackets == 0) throw IllegalArgumentException()
         if (elem == '[') brackets++
         if (elem == ']') brackets--
     }
