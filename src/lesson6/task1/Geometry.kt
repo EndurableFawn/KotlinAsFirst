@@ -270,7 +270,7 @@ fun minContainingCircle(vararg points: Point): Circle {
     val diameter = diameter(*points)
     for (i in 0 until points.size) {
         if ((diameter.center().distance(points[i]) -
-                diameter.begin.distance(diameter.end) / 2 > 1e-7)) case = 1
+                diameter.begin.distance(diameter.end) / 2 > 1e-15)) case = 1
     }
     if (case == 0) return circleByDiameter(diameter)
     else {
@@ -290,6 +290,7 @@ fun minContainingCircle(vararg points: Point): Circle {
                         minRad = currCircle.radius
                         minCircle = currCircle
                     }
+
                     check = 0
                 }
             }
