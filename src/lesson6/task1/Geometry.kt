@@ -266,25 +266,35 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
 fun minContainingCircle(vararg points: Point): Circle {
     if (points.isEmpty()) throw IllegalArgumentException()
     if (points.size == 1) return Circle(points[0], 0.0)
-    var maxDis = 0.0
-    var maxPoint = Point(0.0, 0.0)
+    var case = 0
     val diameter = diameter(*points)
     for (i in 0 until points.size) {
         if ((diameter.center().distance(points[i]) -
-                diameter.begin.distance(diameter.end) / 2 > 1e-7) &&
-                (diameter.center().distance(points[i]) > maxDis)) {
-            maxDis = diameter.center().distance(points[i])
-            maxPoint = points[i]
-        }
+                diameter.begin.distance(diameter.end) / 2 > 1e-7)) case = 1
     }
-    return if (maxDis == 0.0) circleByDiameter(diameter)
+    if (case == 0) return circleByDiameter(diameter)
     else {
-        var resCircle = circleByThreePoints(diameter.begin, diameter.end, maxPoint)
-        for (elem in points) {
-            if (!resCircle.contains(elem))
-                resCircle = Circle(resCircle.center, resCircle.center.distance(elem))
+        var minRad = Double.MAX_VALUE
+        var minCircle = Circle(Point(0.0, 0.0), Double.MAX_VALUE)
+        var check = 0
+        for (i in 0 until points.size - 2) {
+            for (j in i + 1 until points.size - 1) {
+                for (k in j + 1 until points.size) {
+                    val currCircle = Circle(circleByThreePoints(points[i],
+                            points[j], points[k]).center, circleByThreePoints(points[i],
+                            points[j], points[k]).radius + 1e-15)
+                    for (f in 0 until points.size) {
+                        if (!currCircle.contains(points[f])) check = -1
+                    }
+                    if (check == 0 && currCircle.radius < minRad) {
+                        minRad = currCircle.radius
+                        minCircle = currCircle
+                    }
+                    check = 0
+                }
+            }
         }
-        resCircle
+        return minCircle
     }
 }
 

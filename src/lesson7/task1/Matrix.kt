@@ -64,8 +64,7 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
     override fun get(row: Int, column: Int): E = get(Cell(row, column))
 
     override fun get(cell: Cell): E {
-        if (map[cell] == null) throw
-        IndexOutOfBoundsException("map[${cell.row},${cell.column}] is not exist")
+        if (map[cell] == null) throw IndexOutOfBoundsException("map[${cell.row},${cell.column}] is not exist")
         return map[cell]!!
     }
 
@@ -77,9 +76,22 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
         map[cell] = value
     }
 
-    override fun equals(other: Any?) =
-            other is MatrixImpl<*> &&
-                    map == other.map
+    override fun equals(other: Any?): Boolean {
+        if (other is Matrix<*> && height == other.height && width == other.width) {
+            for (i in 0 until height) {
+                for (j in 0 until width) {
+                    if (this[i, j] != other[i, j]) return false
+                }
+            }
+            return true
+        }
+        return false
+    }
+
+
+
+
+
 
     override fun toString(): String {
         val sb = StringBuilder()
@@ -103,5 +115,6 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
         result = 31 * result + map.hashCode()
         return result
     }
+
 }
 
