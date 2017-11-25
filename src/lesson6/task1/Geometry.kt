@@ -272,7 +272,8 @@ fun minContainingCircle(vararg points: Point): Circle {
         if ((diameter.center().distance(points[i]) -
                 diameter.begin.distance(diameter.end) / 2 > 1e-7)) case = 1
     }
-    if (case == 0) return Circle(circleByDiameter(diameter).center, circleByDiameter(diameter).radius + 1e-12)
+    if (case == 0) return Circle(circleByDiameter(diameter).center,
+            circleByDiameter(diameter).radius + 1e-12)
     else {
         var minRad = Double.MAX_VALUE
         var minCircle = Circle(Point(0.0, 0.0), Double.MAX_VALUE)
