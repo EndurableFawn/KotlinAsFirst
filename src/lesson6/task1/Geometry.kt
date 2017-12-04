@@ -280,7 +280,6 @@ fun minContainingCircle(vararg points: Point): Circle {
     else {
         var minRad = Double.MAX_VALUE
         var minCircle = Circle(Point(0.0, 0.0), Double.MAX_VALUE)
-
         for (i in 0 until points.size - 2) {
             for (j in i + 1 until points.size - 1) {
                 for (k in j + 1 until points.size) {
