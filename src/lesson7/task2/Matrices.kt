@@ -71,6 +71,7 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
         for (i in checkX until matrix.width) {
             if (matrix[checkY, checkX] != 0) break
             matrix[checkY, checkX] = counter
+            if (counter == height * width) return matrix
             counter++
             checkX++
         }
@@ -79,6 +80,7 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
         for (i in checkY until matrix.height) {
             if (matrix[checkY, checkX] != 0) break
             matrix[checkY, checkX] = counter
+            if (counter == height * width) return matrix
             counter++
             checkY++
         }
@@ -87,6 +89,7 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
         for (i in checkX downTo 0) {
             if (matrix[checkY, checkX] != 0) break
             matrix[checkY, checkX] = counter
+            if (counter == height * width) return matrix
             counter++
             checkX--
         }
