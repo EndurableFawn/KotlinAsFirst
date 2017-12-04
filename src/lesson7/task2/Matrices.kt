@@ -101,6 +101,7 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
         checkY++
         checkX++
     }
+    if (matrix[checkY, checkX] == 0) matrix[checkY, checkX] = counter
     return matrix
 }
 
