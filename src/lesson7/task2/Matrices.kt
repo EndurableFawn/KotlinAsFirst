@@ -3,6 +3,7 @@
 package lesson7.task2
 
 import lesson7.task1.Matrix
+import lesson7.task1.MatrixImpl
 import lesson7.task1.createMatrix
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
@@ -61,45 +62,45 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  *  9  8  7  6
  */
 fun generateSpiral(height: Int, width: Int): Matrix<Int> {
+    if (height == 1 && width == 1) return MatrixImpl(1, 1, 1)
     val matrix = createMatrix(height, width, 0)
     var checkX = 0
     var checkY = 0
     var counter = 1
     while (counter < height * width) {
-        try {
-            while (matrix[checkY, checkX + 1] == 0) {
-                matrix[checkY, checkX] = counter
-                counter++
-                checkX++
-            }
-        } catch (e: IndexOutOfBoundsException) {
+        for (i in checkX until matrix.width) {
+            if (matrix[checkY, checkX] != 0) break
+            matrix[checkY, checkX] = counter
+            counter++
+            checkX++
         }
-        try {
-            while (matrix[checkY + 1, checkX] == 0) {
-                matrix[checkY, checkX] = counter
-                counter++
-                checkY++
-            }
-        } catch (e: IndexOutOfBoundsException) {
+        checkX--
+        checkY++
+        for (i in checkY until matrix.height) {
+            if (matrix[checkY, checkX] != 0) break
+            matrix[checkY, checkX] = counter
+            counter++
+            checkY++
         }
-        try {
-            while (matrix[checkY, checkX - 1] == 0) {
-                matrix[checkY, checkX] = counter
-                counter++
-                checkX--
-            }
-        } catch (e: IndexOutOfBoundsException) {
+        checkY--
+        checkX--
+        for (i in checkX downTo 0) {
+            if (matrix[checkY, checkX] != 0) break
+            matrix[checkY, checkX] = counter
+            counter++
+            checkX--
         }
-        try {
-            while (matrix[checkY - 1, checkX] == 0) {
-                matrix[checkY, checkX] = counter
-                counter++
-                checkY--
-            }
-        } catch (e: IndexOutOfBoundsException) {
+        checkX++
+        checkY--
+        for (i in checkY downTo 0) {
+            if (matrix[checkY, checkX] != 0) break
+            matrix[checkY, checkX] = counter
+            counter++
+            checkY--
         }
+        checkY++
+        checkX++
     }
-    matrix[checkY, checkX] = counter
     return matrix
 }
 
@@ -123,8 +124,9 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
     for (f in 1..counter) {
         for (i in 0 until height) {
             for (j in 0 until width) {
-                if ((i == f - 1 || j == f - 1 || i == height - f ||
-                        j == width - f) && matrix[i, j] == 0) matrix[i, j] = f
+                if (matrix[i, j] != 0) continue
+                if (i == f - 1 || j == f - 1 || i == height - f ||
+                        j == width - f) matrix[i, j] = f
             }
         }
     }
@@ -153,7 +155,6 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> {
         var yLoopCounter = 0
         var xLoopCounter = xCounter
         do {
-
             matrix[yLoopCounter, xLoopCounter] = counter
             counter++
             xLoopCounter--
@@ -202,20 +203,18 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
  * 3 1 2
  */
 fun isLatinSquare(matrix: Matrix<Int>): Boolean {
-    val checkList = mutableListOf<Int>()
+    val checkList = mutableSetOf<Int>()
     for (i in 0 until matrix.height) {
-        checkList.add(matrix[i, 0])
-        for (j in 1 until matrix.width) {
-            if (matrix[i, j] == matrix[i, 0]) return false
+        for (j in 0 until matrix.width) {
+            if (checkList.contains(matrix[i, j])) return false
             checkList.add(matrix[i, j])
         }
         if (!listContainsDigits(checkList, matrix.width)) return false
         checkList.clear()
     }
     for (j in 0 until matrix.height) {
-        checkList.add(matrix[0, j])
-        for (i in 1 until matrix.width) {
-            if (matrix[i, j] == matrix[0, j]) return false
+        for (i in 0 until matrix.width) {
+            if (checkList.contains(matrix[i, j])) return false
             checkList.add(matrix[i, j])
         }
         if (!listContainsDigits(checkList, matrix.width)) return false
@@ -224,7 +223,7 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean {
     return true
 }
 
-fun listContainsDigits(list: MutableList<Int>, n: Int): Boolean {
+fun listContainsDigits(list: MutableSet<Int>, n: Int): Boolean {
     for (count in 1..n) {
         if (!list.contains(count)) return false
     }

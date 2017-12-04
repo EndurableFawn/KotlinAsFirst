@@ -266,33 +266,38 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
 fun minContainingCircle(vararg points: Point): Circle {
     if (points.isEmpty()) throw IllegalArgumentException()
     if (points.size == 1) return Circle(points[0], 0.0)
-    var case = 0
+    var case = true
     val diameter = diameter(*points)
     for (i in 0 until points.size) {
         if ((diameter.center().distance(points[i]) -
-                diameter.begin.distance(diameter.end) / 2 > 1e-7)) case = 1
+                diameter.begin.distance(diameter.end) / 2 > 1e-7)) {
+            case = false
+            break
+        }
     }
-    if (case == 0) return Circle(circleByDiameter(diameter).center,
+    if (case) return Circle(circleByDiameter(diameter).center,
             circleByDiameter(diameter).radius + 1e-12)
     else {
         var minRad = Double.MAX_VALUE
         var minCircle = Circle(Point(0.0, 0.0), Double.MAX_VALUE)
-        var check = 0
+
         for (i in 0 until points.size - 2) {
             for (j in i + 1 until points.size - 1) {
                 for (k in j + 1 until points.size) {
+                    var check = 0
                     val currCircle = Circle(circleByThreePoints(points[i],
                             points[j], points[k]).center, circleByThreePoints(points[i],
                             points[j], points[k]).radius + 1e-12)
                     for (f in 0 until points.size) {
-                        if (!currCircle.contains(points[f])) check = -1
+                        if (!currCircle.contains(points[f])) {
+                            check = -1
+                            break
+                        }
                     }
                     if (check == 0 && currCircle.radius < minRad) {
                         minRad = currCircle.radius
                         minCircle = currCircle
                     }
-
-                    check = 0
                 }
             }
         }
