@@ -276,7 +276,7 @@ fun minContainingCircle(vararg points: Point): Circle {
         }
     }
     if (case) return Circle(circleByDiameter(diameter).center,
-            circleByDiameter(diameter).radius + 1e-12)
+            circleByDiameter(diameter).radius + 1e-7)
     else {
         var minRad = Double.MAX_VALUE
         var minCircle = Circle(Point(0.0, 0.0), Double.MAX_VALUE)
@@ -286,7 +286,7 @@ fun minContainingCircle(vararg points: Point): Circle {
                     var check = 0
                     val currCircle = Circle(circleByThreePoints(points[i],
                             points[j], points[k]).center, circleByThreePoints(points[i],
-                            points[j], points[k]).radius + 1e-12)
+                            points[j], points[k]).radius + 1e-7)
                     for (f in 0 until points.size) {
                         if (!currCircle.contains(points[f])) {
                             check = -1
@@ -300,6 +300,7 @@ fun minContainingCircle(vararg points: Point): Circle {
                 }
             }
         }
+        println("$minCircle")
         return minCircle
     }
 }
