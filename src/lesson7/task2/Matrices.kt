@@ -211,8 +211,8 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean {
             if (checkSet2.contains(matrix[j, i])) return false
             checkSet2.add(matrix[j, i])
         }
-        if (checkSet1 != (1..matrix.width).toSet() ||
-                checkSet2 != (1..matrix.width).toSet()) return false
+        val digitSet = (1..matrix.width).toSet()
+        if (checkSet1 != digitSet || checkSet2 != digitSet) return false
         checkSet1.clear()
         checkSet2.clear()
     }
