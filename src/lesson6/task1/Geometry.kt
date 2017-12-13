@@ -283,24 +283,27 @@ fun minContainingCircle(vararg points: Point): Circle {
         for (i in 0 until points.size - 2) {
             for (j in i + 1 until points.size - 1) {
                 for (k in j + 1 until points.size) {
-                    var check = 0
-                    val currCircle = Circle(circleByThreePoints(points[i],
-                            points[j], points[k]).center, circleByThreePoints(points[i],
-                            points[j], points[k]).radius + 1e-10)
+                    var check = true
+                    var currCircle = circleByThreePoints(points[i], points[j], points[k])
+                    val d1 = points[i].distance(currCircle.center)
+                    val d2 = points[j].distance(currCircle.center)
+                    val d3 = points[k].distance(currCircle.center)
+                    if (d1 > currCircle.radius || d2 > currCircle.radius || d3 > currCircle.radius) {
+                        currCircle = Circle(currCircle.center, maxOf(d1, d2, d3))
+                    }
                     for (f in 0 until points.size) {
                         if (!currCircle.contains(points[f])) {
-                            check = -1
+                            check = false
                             break
                         }
                     }
-                    if (check == 0 && currCircle.radius < minRad) {
+                    if (check && currCircle.radius < minRad) {
                         minRad = currCircle.radius
                         minCircle = currCircle
                     }
                 }
             }
         }
-        println("$minCircle")
         return minCircle
     }
 }

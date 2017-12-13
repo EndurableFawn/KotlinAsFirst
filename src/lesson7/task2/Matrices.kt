@@ -62,16 +62,14 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  *  9  8  7  6
  */
 fun generateSpiral(height: Int, width: Int): Matrix<Int> {
-    if (height == 1 && width == 1) return MatrixImpl(1, 1, 1)
     val matrix = createMatrix(height, width, 0)
     var checkX = 0
     var checkY = 0
     var counter = 1
-    while (counter < height * width) {
+    while (counter <= height * width) {
         for (i in checkX until matrix.width) {
             if (matrix[checkY, checkX] != 0) break
             matrix[checkY, checkX] = counter
-            if (counter == height * width) return matrix
             counter++
             checkX++
         }
@@ -80,7 +78,6 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
         for (i in checkY until matrix.height) {
             if (matrix[checkY, checkX] != 0) break
             matrix[checkY, checkX] = counter
-            if (counter == height * width) return matrix
             counter++
             checkY++
         }
@@ -89,7 +86,6 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
         for (i in checkX downTo 0) {
             if (matrix[checkY, checkX] != 0) break
             matrix[checkY, checkX] = counter
-            if (counter == height * width) return matrix
             counter++
             checkX--
         }
@@ -104,7 +100,6 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
         checkY++
         checkX++
     }
-    if (matrix[checkY, checkX] == 0) matrix[checkY, checkX] = counter
     return matrix
 }
 
@@ -207,32 +202,23 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
  * 3 1 2
  */
 fun isLatinSquare(matrix: Matrix<Int>): Boolean {
-    val checkList = mutableSetOf<Int>()
+    val checkSet1 = mutableSetOf<Int>()
+    val checkSet2 = mutableSetOf<Int>()
     for (i in 0 until matrix.height) {
         for (j in 0 until matrix.width) {
-            if (checkList.contains(matrix[i, j])) return false
-            checkList.add(matrix[i, j])
+            if (checkSet1.contains(matrix[i, j])) return false
+            checkSet1.add(matrix[i, j])
+            if (checkSet2.contains(matrix[j, i])) return false
+            checkSet2.add(matrix[j, i])
         }
-        if (!listContainsDigits(checkList, matrix.width)) return false
-        checkList.clear()
-    }
-    for (j in 0 until matrix.height) {
-        for (i in 0 until matrix.width) {
-            if (checkList.contains(matrix[i, j])) return false
-            checkList.add(matrix[i, j])
-        }
-        if (!listContainsDigits(checkList, matrix.width)) return false
-        checkList.clear()
+        if (checkSet1 != (1..matrix.width).toSet() ||
+                checkSet2 != (1..matrix.width).toSet()) return false
+        checkSet1.clear()
+        checkSet2.clear()
     }
     return true
 }
 
-fun listContainsDigits(list: MutableSet<Int>, n: Int): Boolean {
-    for (count in 1..n) {
-        if (!list.contains(count)) return false
-    }
-    return true
-}
 
 /**
  * Средняя
