@@ -202,19 +202,15 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
  * 3 1 2
  */
 fun isLatinSquare(matrix: Matrix<Int>): Boolean {
-    val checkSet1 = mutableSetOf<Int>()
-    val checkSet2 = mutableSetOf<Int>()
     for (i in 0 until matrix.height) {
+        val checkSet1 = mutableSetOf<Int>()
+        val checkSet2 = mutableSetOf<Int>()
         for (j in 0 until matrix.width) {
-            if (checkSet1.contains(matrix[i, j])) return false
             checkSet1.add(matrix[i, j])
-            if (checkSet2.contains(matrix[j, i])) return false
             checkSet2.add(matrix[j, i])
         }
         val digitSet = (1..matrix.width).toSet()
         if (checkSet1 != digitSet || checkSet2 != digitSet) return false
-        checkSet1.clear()
-        checkSet2.clear()
     }
     return true
 }
